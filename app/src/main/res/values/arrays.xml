@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="images_name">
+        <item>a beach party in space</item>
+        <item>a rice farm on mars beside a duplex house</item>
+        <item>a space ship on mars</item>
+        <item>date night in a restaurant among the stars</item>
+        <item>food festival in space</item>
+        <item>my friends and i going for a movie night in space</item>
+        <item>my friends and i going for a movie night on mars</item>
+        <item>party with friends in space</item>
+        <item>roller coaster ride in space</item>
+        <item>selfie with aliens</item>
+        <item>skating in the stars</item>
+        <item>the beach on mars</item>
+        <item>the white house on mars</item>
+        <item>two lovers holding hands in space</item>
+        <item>wedding in space</item>
+        <item>wild animals enjoying the stars in space</item>
+    </string-array>
+</resources>
