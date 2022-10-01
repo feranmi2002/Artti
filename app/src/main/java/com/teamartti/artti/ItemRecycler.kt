@@ -1,38 +1,41 @@
 package com.teamartti.artti
 
+import android.graphics.Bitmap
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.teamartti.artti.databinding.ImageItemBinding
+import com.google.android.material.imageview.ShapeableImageView
+
 
 class ItemRecycler(
-    val data: MutableList<ItemModel>,
-    val downloadCallback: (url: String?) -> Unit,
-    val wallpaperCallback: (url: String?) -> Unit
+    private val data: List<ItemModel>,
+    val downloadCallback: (bitmap: Bitmap?) -> Unit,
+    val wallpaperCallback: (bitmap: Bitmap?) -> Unit
 ) :
     RecyclerView.Adapter<ItemRecycler.ItemViewHolder>() {
 
-    inner class ItemViewHolder(val binding: ImageItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    inner class ItemViewHolder(val view: View) :
+        RecyclerView.ViewHolder(view) {
 
         var item: ItemModel? = null
-        val image = binding.image
-        val menu = binding.menu
+        val image = view.findViewById<ShapeableImageView>(R.id.image)
+        val menu = view.findViewById<ShapeableImageView>(R.id.menu)
 
         init {
             image.setOnClickListener {
-                // TODO show full image
+//               do later
             }
 
             menu.setOnClickListener {
-                val popupMenu = PopupMenu(itemView.context, binding.menu)
+                val popupMenu = PopupMenu(itemView.context, menu)
                 popupMenu.menuInflater.inflate(R.menu.item_menu, popupMenu.menu)
                 popupMenu.setOnMenuItemClickListener {
                     when (it.itemId) {
-                        R.id.download -> downloadCallback.invoke(item?.link)
-                        R.id.wallpaper -> wallpaperCallback.invoke(item?.link)
+                        R.id.download -> downloadCallback.invoke(item?.image)
+                        R.id.wallpaper -> wallpaperCallback.invoke(item?.image)
                     }
                     true
                 }
@@ -43,20 +46,14 @@ class ItemRecycler(
         fun bind(model: ItemModel) {
             item = model
             Glide.with(itemView.context)
-                .load(model.link)
-                .into(binding.image)
+                .load(model.image)
+                .into(image)
         }
 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        return ItemViewHolder(
-            ImageItemBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        )
+        return ItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.image_item, parent, false))
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {

@@ -6,9 +6,6 @@ plugins {
 
 android {
     compileSdk 32
-    buildFeatures {
-        viewBinding = true
-    }
 
     defaultConfig {
         applicationId "com.teamartti.artti"
@@ -48,4 +45,5 @@ dependencies {
     kapt 'com.github.bumptech.glide:compiler:4.12.0'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.4.1'
     implementation 'androidx.navigation:navigation-ui-ktx:2.4.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
 }

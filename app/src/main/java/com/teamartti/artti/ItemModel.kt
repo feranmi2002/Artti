@@ -1,7 +1,9 @@
 package com.teamartti.artti
 
+import android.graphics.Bitmap
+
 data class ItemModel(
-    val link:String
+    val image:Bitmap?
 ){
-    constructor():this("")
+    constructor():this(null)
 }
