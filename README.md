@@ -1,6 +1,6 @@
-#🚀Artti
+# 🚀Artti
 
-### **Artti** is an android app that helps you bring your dreams and imaginations about space to life. It only needs you to put your _If I were in space, I would_ wishes and turns them to artistic pictures.It uses an AI model trained on images and the corresponding text description to generate images based on text. For now, we know that only astronauts go to space while we wait for technology that'll take people to mars, **Artti** helps you explore possibilities from images gotten from **NASA**
+### **Artti** is an android app that helps you bring your dreams and imaginations about space to life. It only needs you to put your _"If I were in space, I would_" wishes and turns them to artistic pictures. It uses an AI model trained on images and the corresponding text description to generate images based on text. For now, we know that only astronauts go to space while we wait for technology that'll take people to mars, **Artti** helps you explore possibilities from images gotten from **NASA**
 
 ## See **Artti** in action
 
