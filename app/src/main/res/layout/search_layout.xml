@@ -7,7 +7,7 @@
     android:background="@drawable/background_2"
     tools:context=".SearchFragment">
 
-    <com.google.android.material.textfield.TextInputEditText
+    <com.google.android.material.textfield.MaterialAutoCompleteTextView
         android:id="@+id/search_bar"
         style="@style/ThemeOverlay.Material3.TextInputEditText.OutlinedBox"
         android:layout_width="0dp"

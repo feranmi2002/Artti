@@ -1,5 +1,6 @@
 package com.teamartti.artti
 
+import android.app.WallpaperManager
 import android.content.ContentValues
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -11,18 +12,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.Spinner
-import androidx.appcompat.widget.AppCompatSpinner
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
@@ -40,6 +38,8 @@ class SearchFragment : Fragment() {
         "yyyy.MM.dd 'at' HH:mm:ss z",
         Locale.getDefault()
     )
+    private var searchBar: MaterialAutoCompleteTextView? = null
+    private var goSearch: ShapeableImageView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initImageTitles()
@@ -59,17 +59,39 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val recycler = view.findViewById<RecyclerView>(R.id.recycler)
         progressBar = view.findViewById<CircularProgressIndicator>(R.id.progress_circular)
-        recycler.layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
+        searchBar = view.findViewById<MaterialAutoCompleteTextView>(R.id.search_bar)
+        goSearch = view.findViewById<ShapeableImageView>(R.id.go_search)
+        initAutoCompleteTextView()
+        recycler.layoutManager =
+            GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
         recycler.adapter = adapter
         handleSearchClick()
         handleSearchFromKeyboard()
         super.onViewCreated(view, savedInstanceState)
     }
 
+    private fun initAutoCompleteTextView() {
+//        val array = resources.getStringArray(R.array.images_name)
+//        val arrayAdapter = ArrayAdapter<String>(
+//            requireContext(),
+//            android.R.layout.simple_dropdown_item_1line,
+//            array
+//        )
+//        searchBar?.setAdapter(arrayAdapter)
+        searchBar?.setSimpleItems(R.array.images_name)
+        searchBar?.setOnItemClickListener { adapterView, view, position, id ->
+            val searchText = adapterView.getItemAtPosition(position) as String
+            if (searchText.isNullOrEmpty() || searchText.isBlank()) {
+                Snackbar.make(requireView(), "Enter what you'll like to see", Snackbar.LENGTH_SHORT)
+                    .show()
+            } else {
+                loadImages(searchText)
+            }
+        }
+    }
+
     private fun handleSearchClick() {
-        val goSearch = mView?.findViewById<ShapeableImageView>(R.id.go_search)!!
-        val searchBar = mView?.findViewById<TextInputEditText>(R.id.search_bar)!!
-        goSearch.setOnClickListener {
+        goSearch?.setOnClickListener {
             val searchText = searchBar?.text.toString().trim()
             if (searchText.isNullOrEmpty() || searchText.isBlank()) {
                 Snackbar.make(requireView(), "Enter what you'll like to see", Snackbar.LENGTH_SHORT)
@@ -81,8 +103,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun handleSearchFromKeyboard() {
-        val searchBar = mView?.findViewById<TextInputEditText>(R.id.search_bar)!!
-        searchBar.setOnEditorActionListener { textView, actionId, keyEvent ->
+        searchBar?.setOnEditorActionListener { textView, actionId, keyEvent ->
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_SEARCH -> {
                     val searchText = searchBar?.text.toString().trim()
@@ -111,12 +132,12 @@ class SearchFragment : Fragment() {
             var bitmaps: List<Bitmap>
             data.clear()
             lifecycleScope.launch {
-                result.onEachIndexed  {index, it ->
+                result.onEachIndexed { index, it ->
                     val a = resources.assets.list(it)
                     bitmaps = a?.map { filename ->
                         BitmapFactory.decodeStream(resources.assets.open("${result[index]}/${filename}"))
                     }!!
-                    val img= bitmaps.map { bitmap ->
+                    val img = bitmaps.map { bitmap ->
                         ItemModel(bitmap)
                     }
                     data.addAll(img)
@@ -167,8 +188,15 @@ class SearchFragment : Fragment() {
         )
     }
 
-    private fun useAsWallpaper(url: Bitmap?) {
-//      do nothing yet
+    private fun useAsWallpaper(bitmap: Bitmap?) {
+        try {
+            val wallpaperManager =
+                WallpaperManager.getInstance(requireActivity().applicationContext)
+            wallpaperManager.setBitmap(bitmap)
+            Snackbar.make(requireView(), "Successfully set wallpaper", Snackbar.LENGTH_SHORT).show()
+        } catch (e: java.lang.Exception) {
+            Snackbar.make(requireView(), "Failed to set wallpaper", Snackbar.LENGTH_SHORT).show()
+        }
     }
 
     private fun downloadImage(bitmap: Bitmap?) {
@@ -229,5 +257,6 @@ class SearchFragment : Fragment() {
         imageTitles = mutableListOf()
         imageTitles.addAll(resources.getStringArray(R.array.images_name))
     }
+
 
 }
